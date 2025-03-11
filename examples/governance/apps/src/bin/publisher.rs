@@ -18,6 +18,7 @@
 
 use anyhow::{Context, Result};
 use clap::Parser;
+use url::Url;
 
 use alloy::{
     network::{EthereumWallet, TransactionBuilder},
@@ -26,15 +27,12 @@ use alloy::{
     rpc::types::TransactionRequest,
     signers::local::PrivateKeySigner,
     sol,
-    // sol_types::SolInterface
 };
 
 use governance_methods::FINALIZE_VOTES_ELF;
 use risc0_ethereum_contracts::encode_seal;
 use risc0_zkvm::{default_prover, ExecutorEnv, ProverOpts, VerifierContext};
-// use tokio::task;
 use tracing_subscriber::EnvFilter;
-use url::Url;
 
 sol! {
     /// ERC-20 balance function signature.
@@ -46,26 +44,26 @@ sol! {
 
 /// Arguments of the publisher CLI.
 #[derive(Parser, Debug)]
-#[clap(author, version, about, long_about = None)]
+#[command(author, version, about, long_about = None)]
 struct Args {
     /// Ethereum Wallet Private Key
-    #[clap(long, env)]
+    #[arg(long, env)]
     eth_wallet_private_key: PrivateKeySigner,
 
     /// Node RPC URL
-    #[clap(long)]
+    #[arg(long)]
     rpc_url: Url,
 
     /// Application's contract address on Ethereum
-    #[clap(long)]
+    #[arg(long)]
     contract: Address,
 
     /// The proposal ID (32 bytes, hex-encoded)
-    #[clap(long)]
+    #[arg(long)]
     proposal_id: Bytes,
 
     /// The votes data (hex-encoded, multiple of 100 bytes)
-    #[clap(long)]
+    #[arg(long)]
     votes_data: Bytes,
 }
 
